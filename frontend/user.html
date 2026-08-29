@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#09090b">
+  <title>MARK 2.0 — Voice-First AI Personal Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    :root {
+      --bg-base: #09090b;
+      --card-bg: #141417;
+      --border-color: #27272a;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-yellow: #f59e0b;
+      --accent-blue: #38bdf8;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: var(--bg-base);
+      color: #f4f4f5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-container {
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+      padding: clamp(12px, 3vw, 20px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .user-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      background: #fff;
+      color: #000;
+      font-weight: 900;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    /* Start MARK Hero Overlay */
+    #hero-start-overlay {
+      background: #18181c;
+      border: 2px solid var(--accent-green);
+      border-radius: 24px;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+      box-shadow: 0 12px 40px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-start-hero {
+      background: var(--accent-green);
+      color: #000;
+      border: none;
+      border-radius: 20px;
+      padding: 18px 36px;
+      font-size: clamp(18px, 4vw, 24px);
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+      transition: transform 0.15s;
+    }
+
+    .btn-start-hero:active {
+      transform: scale(0.97);
+    }
+
+    .camera-box {
+      background: #000;
+      border-radius: clamp(14px, 2.5vw, 20px);
+      border: 2px solid var(--border-color);
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 16/9;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    #user-video, #user-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #user-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .guidance-box {
+      background: var(--card-bg);
+      border: 2px solid rgba(16, 185, 129, 0.4);
+      border-radius: clamp(14px, 2.5vw, 20px);
+      padding: clamp(14px, 3vw, 20px);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.25s, background-color 0.25s;
+    }
+
+    .guidance-box.URGENT {
+      border-color: var(--accent-red);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .guidance-box.CAUTION {
+      border-color: var(--accent-yellow);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    #guidance-text {
+      font-size: clamp(16px, 4vw, 22px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.35;
+      word-wrap: break-word;
+    }
+
+    /* ── Dedicated Interactive Microphone Control ── */
+    .mic-control-card {
+      background: #18181c;
+      border: 2px solid var(--border-color);
+      border-radius: 24px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.3s;
+    }
+
+    .mic-control-card.LISTENING {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
+    }
+
+    .mic-control-card.PROCESSING {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+    }
+
+    .mic-control-card.SPEAKING {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-talk-mic {
+      background: #27272a;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50px;
+      padding: 16px 32px;
+      font-size: clamp(15px, 3.5vw, 18px);
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 420px;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .btn-talk-mic:active {
+      transform: scale(0.97);
+    }
+
+    .btn-talk-mic.LISTENING {
+      background: var(--accent-red);
+      color: #fff;
+      border-color: var(--accent-red);
+      animation: mic-pulse 1.2s infinite;
+    }
+
+    .btn-talk-mic.PROCESSING {
+      background: var(--accent-yellow);
+      color: #000;
+      border-color: var(--accent-yellow);
+    }
+
+    .btn-talk-mic.SPEAKING {
+      background: var(--accent-blue);
+      color: #000;
+      border-color: var(--accent-blue);
+    }
+
+    @keyframes mic-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+      50% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+    }
+
+    /* ── Live Conversation Transcript Area ── */
+    .transcript-box {
+      background: #101014;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .transcript-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .transcript-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 800;
+      color: #71717a;
+      text-transform: uppercase;
+    }
+
+    .transcript-text {
+      color: #e4e4e7;
+      line-height: 1.4;
+    }
+
+    .transcript-text.you {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    .transcript-text.mark {
+      color: #10b981;
+      font-weight: 700;
+    }
+
+    .guardian-link-card {
+      background: #18181c;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 16px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-emergency-large {
+      background: var(--accent-red);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: clamp(14px, 3vw, 17px);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.35);
+      min-height: 48px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="user-container">
+    
+    <!-- Responsive Header -->
+    <header class="user-header">
+      <div class="brand-group">
+        <div class="logo-badge">M</div>
+        <div>
+          <div style="font-weight: 800; font-size: clamp(15px, 3vw, 18px); letter-spacing: -0.02em;">MARK 2.0</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #38bdf8;">VOICE-FIRST MOBILITY COPILOT</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span id="session-code-pill" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #a1a1aa; background: #18181c; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-color);">
+          SESSION: <strong style="color: #fff;" id="display-session-id">ABC123</strong>
+        </span>
+      </div>
+    </header>
+
+    <!-- Start MARK Hero Overlay (Shown before start) -->
+    <div id="hero-start-overlay">
+      <div style="font-size: 48px;">🎙️</div>
+      <div>
+        <h2 style="font-size: clamp(20px, 4vw, 26px); font-weight: 900; margin: 0 0 6px 0; color: #fff;">START MARK</h2>
+        <p style="font-size: 13px; color: #a1a1aa; margin: 0; line-height: 1.5;">
+          Tap once to activate your voice-grounded visual assistant. Press the microphone button anytime to talk.
+        </p>
+      </div>
+      <button id="btn-start-mark" class="btn-start-hero">
+        <span>▶ START ASSISTANCE</span>
+      </button>
+    </div>
+
+    <!-- Active Assistant Interface (Shown after start) -->
+    <div id="active-assistant-ui" style="display: none; flex-direction: column; gap: 14px;">
+      
+      <!-- Camera View -->
+      <div class="camera-box">
+        <video id="user-video" playsinline muted autoplay></video>
+        <canvas id="user-canvas"></canvas>
+      </div>
+
+      <!-- Spoken Guidance Card -->
+      <div id="guidance-card" class="guidance-box">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #71717a; text-transform: uppercase; letter-spacing: 0.08em;">
+          SPOKEN NAVIGATION GUIDANCE:
+        </div>
+        <div id="guidance-text">
+          "నమస్కారం సర్, నేను MARK. మీ కోసం సిద్ధంగా ఉన్నాను."
+        </div>
+      </div>
+
+      <!-- ── Dedicated Interactive Microphone Button & Status ── -->
+      <div class="mic-control-card" id="mic-card">
+        <button id="btn-talk-mic" class="btn-talk-mic" aria-label="Tap to talk to MARK">
+          <span id="mic-icon" style="font-size: 1.3em;">🎙️</span>
+          <span id="mic-label">TALK TO MARK</span>
+        </button>
+        <div id="mic-status-sub" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #a1a1aa;">
+          Tap button or speak naturally in Telugu/English
+        </div>
+      </div>
+
+      <!-- ── Live Conversation Transcript ── -->
+      <div class="transcript-box" id="transcript-box">
+        <div class="transcript-row">
+          <span class="transcript-label">YOU</span>
+          <span class="transcript-text you" id="transcript-you">"మార్క్, నా ముందు ఏముంది?"</span>
+        </div>
+        <div class="transcript-row">
+          <span class="transcript-label">MARK</span>
+          <span class="transcript-text mark" id="transcript-mark">"సర్, మీ ముందు ఒక వ్యక్తి ఉన్నారు... ఆగండి ఒకసారి."</span>
+        </div>
+      </div>
+
+      <!-- Guardian Access Link -->
+      <div class="guardian-link-card">
+        <div>
+          <div style="font-weight: 800; font-size: 12px; color: #fff;">🛡️ Remote Guardian Observer</div>
+          <div style="font-size: 10px; color: #a1a1aa;">Family can watch live stream & state on their own screen.</div>
+        </div>
+        <a id="guardian-link-btn" href="/guardian" target="_blank" style="background: #38bdf8; color: #000; text-decoration: none; font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 8px;">
+          Open Guardian View ↗
+        </a>
+      </div>
+
+      <!-- Emergency SOS Button -->
+      <button id="btn-user-sos" class="btn-emergency-large" aria-label="Trigger Emergency SOS Alert">
+        <span style="font-size: 1.2em;">🚨</span>
+        <span>EMERGENCY SOS (CALL FAMILY)</span>
+      </button>
+
+    </div>
+
+  </div>
+
+  <script src="/static/user.js"></script>
+</body>
+</html>

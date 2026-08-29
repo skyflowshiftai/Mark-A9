@@ -1,0 +1,48 @@
+{
+  "system": {
+    "name": "MARK 2.0",
+    "version": "2.0.0",
+    "mode": "ASSISTIVE_AI",
+    "target_user": "BLIND_AND_VISUALLY_IMPAIRED"
+  },
+  "perception": {
+    "yolo_model": "yolov8n.pt",
+    "confidence_threshold": 0.35,
+    "iou_threshold": 0.45,
+    "input_width": 640,
+    "input_height": 360,
+    "target_fps": 15
+  },
+  "tracking": {
+    "max_disappeared": 15,
+    "max_distance": 120,
+    "smoothing_alpha": 0.35
+  },
+  "spatial": {
+    "focal_length_px": 550.0,
+    "corridor_center_ratio": 0.40,
+    "corridor_lateral_margin": 0.30
+  },
+  "risk": {
+    "weights": {
+      "distance": 0.40,
+      "movement": 0.25,
+      "object_type": 0.20,
+      "position": 0.10,
+      "persistence": 0.05
+    },
+    "thresholds": {
+      "critical": 80,
+      "high": 60,
+      "medium": 35,
+      "low": 0
+    },
+    "danger_distance_m": 3.0,
+    "warning_distance_m": 6.0
+  },
+  "voice": {
+    "cooldown_seconds": 3.0,
+    "priority_interrupt": true,
+    "green_silence_enabled": true
+  }
+}

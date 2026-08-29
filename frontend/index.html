@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MARK 2.0 — AI Visual Assistant for the Visually Impaired</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ═════════════════════════════════════════════════
+       MARKETING SAAS LANDING PAGE (TAB 1)
+       ═════════════════════════════════════════════════ -->
+  <div id="page-landing" class="page active">
+    
+    <!-- Top SaaS Navigation -->
+    <header class="saas-nav">
+      <a href="/" class="nav-brand">
+        <div class="nav-brand-logo">M</div>
+        <span class="nav-brand-text">MARK 2.0</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#modes">Modes</a></li>
+        <li><a href="#silence">The Silence Difference</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+      </ul>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="/app" target="_blank" class="nav-cta-btn">
+          Try MARK 2.0 ↗
+        </a>
+      </div>
+    </header>
+
+    <!-- 1. Hero Section -->
+    <section class="saas-hero">
+      <div class="trust-badge">
+        <span class="trust-dot"></span>
+        AI Assistive Technology for Visual Independence
+      </div>
+
+      <h1 class="hero-headline">
+        AI that sees the world with you.
+      </h1>
+
+      <p class="hero-subheadline">
+        MARK helps visually impaired people understand their surroundings, recognize danger, and move with greater confidence — using vision and voice.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="/app" target="_blank" class="btn-primary-hero" style="text-decoration: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Try MARK 2.0 (Open App)
+        </a>
+        <a href="#how-it-works" class="btn-secondary-hero" style="text-decoration: none;">
+          See How It Works
+        </a>
+      </div>
+
+      <!-- Hero Dashboard Visual Mockup -->
+      <div class="hero-mockup-container">
+        <div class="mockup-header">
+          <div class="mockup-dots">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+          </div>
+          <span style="color: var(--text-white-secondary);">MARK 2.0 AI Command Center • Live Preview</span>
+          <span style="color: var(--accent-green);">● SYSTEM ACTIVE</span>
+        </div>
+
+        <div class="mockup-body">
+          <div class="mockup-camera-box">
+            <div class="mockup-tag" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-green);">
+              CAMERA: FORWARD CORRIDOR
+            </div>
+
+            <!-- Simulated Hazard Box -->
+            <div class="mockup-bounding-box">
+              <div class="mockup-tag">
+                VEHICLE #04 • 1.4m HIGH RISK
+              </div>
+            </div>
+
+            <div class="mockup-mark-banner">
+              <div>
+                <div style="font-family: var(--font-mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8;">
+                  MARK SAYS
+                </div>
+                <div style="font-size: 17px; font-weight: 800;">
+                  "Vehicle approaching. Stop."
+                </div>
+              </div>
+              <span style="font-family: var(--font-mono); font-size: 11px; background: #fff; color: #ef4444; padding: 2px 8px; border-radius: 4px; font-weight: 800;">
+                RED THREAT
+              </span>
+            </div>
+          </div>
+
+          <div class="mockup-sidebar">
+            <div class="mockup-card">
+              <div style="color: var(--text-muted); font-size: 10px; margin-bottom: 8px;">PERCEIVED OBJECTS</div>
+              <div class="mockup-row">
+                <span style="color: var(--accent-red);">🔴 Vehicle #04</span>
+                <span>1.4m (Approaching)</span>
+              </div>
+              <div class="mockup-row">
+                <span style="color: var(--accent-amber);">🟡 Person #07</span>
+                <span>2.8m (Left)</span>
+              </div>
+              <div class="mockup-row" style="border: none;">
+                <span style="color: var(--accent-green);">🟢 Chair #02</span>
+                <span>4.1m (Safe)</span>
+              </div>
+            </div>
+
+            <div class="mockup-card">
+              <div style="color: var(--text-muted); font-size: 10px; margin-bottom: 8px;">INTELLIGENCE DECISION</div>
+              <div style="font-size: 11px; line-height: 1.4; color: var(--text-white-secondary);">
+                10 objects detected. 1 critical hazard isolated. Audio cue triggered. Cooldown active.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Problem Section -->
+    <section class="saas-section">
+      <div class="section-label">The Problem</div>
+      <h2 class="section-title">
+        The world is visual. Independence shouldn't depend on sight.
+      </h2>
+      <p class="section-desc">
+        Modern physical environments communicate critical survival and navigational information visually—from approaching traffic and staircase drops to room numbers, banknotes, and safety notices.
+      </p>
+
+      <div class="problem-grid">
+        <div class="problem-card">
+          <h3>The Overload Trap</h3>
+          <p>
+            Existing assistive camera apps describe every visual artifact in view. A stream of continuous noise ("chair, bottle, person, window, door") causes cognitive fatigue and masks real danger.
+          </p>
+        </div>
+        <div class="problem-card">
+          <h3>The Decision Gap</h3>
+          <p>
+            Traditional vision systems stop at object recognition. A visually impaired person doesn't need to know a car exists 15 meters away—they need to know if that car is entering their direct walking path.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Solution Section: 5-Step Process -->
+    <section id="how-it-works" class="saas-section" style="background: #fff; max-width: 100%; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+        <div class="section-label">Meet MARK</div>
+        <h2 class="section-title">
+          From visual chaos to concise voice clarity.
+        </h2>
+        <p class="section-desc">
+          MARK transforms continuous camera video into context-aware, actionable voice instructions through a 5-stage intelligence loop.
+        </p>
+
+        <div class="loop-container">
+          <div class="loop-step-card">
+            <span class="step-num">01</span>
+            <h4 class="step-name">SEE</h4>
+            <p class="step-desc">Camera observes the forward corridor at 10-15 frames per second.</p>
+          </div>
+          <div class="loop-step-card">
+            <span class="step-num">02</span>
+            <h4 class="step-name">UNDERSTAND</h4>
+            <p class="step-desc">Local neural vision identifies obstacles, pedestrians, vehicles, and text.</p>
+          </div>
+          <div class="loop-step-card">
+            <span class="step-num">03</span>
+            <h4 class="step-name">PREDICT</h4>
+            <p class="step-desc">Kinematic tracker estimates metric distance, speed, and trajectory overlap.</p>
+          </div>
+          <div class="loop-step-card">
+            <span class="step-num">04</span>
+            <h4 class="step-name">PRIORITIZE</h4>
+            <p class="step-desc">Multi-factor risk engine ranks threats and isolates the single actionable event.</p>
+          </div>
+          <div class="loop-step-card">
+            <span class="step-num">05</span>
+            <h4 class="step-name">SPEAK</h4>
+            <p class="step-desc">Speaks concise, max 5-word guidance. Stays silent when safe.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. The Silence Difference -->
+    <section id="silence" class="saas-section">
+      <div class="section-label">The Silence Difference</div>
+      <h2 class="section-title">
+        Knowing when NOT to speak is intelligence.
+      </h2>
+      <p class="section-desc">
+        MARK doesn't describe everything it sees. It tells you what you need to know.
+      </p>
+
+      <div class="silence-comparison-box">
+        <div class="comparison-column">
+          <div class="comparison-tag bad">Traditional Vision Apps (Cognitive Overload)</div>
+          <div class="audio-stream-list" style="color: #a1a1aa;">
+            <div>🔊 "Person detected 3 meters."</div>
+            <div>🔊 "Chair on left."</div>
+            <div>🔊 "Table detected."</div>
+            <div>🔊 "Bottle on floor."</div>
+            <div>🔊 "Window on right."</div>
+            <div>🔊 "Door ahead."</div>
+            <div>🔊 "Person detected 2 meters."</div>
+          </div>
+          <p style="font-size: 13px; color: var(--text-white-secondary);">
+            Non-stop voice chatter creates disorientation and drains attention.
+          </p>
+        </div>
+
+        <div class="comparison-column">
+          <div class="comparison-tag good">MARK 2.0 (Intentional Silence by Design)</div>
+          <div class="audio-stream-list" style="border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05);">
+            <div style="color: #fff; font-weight: 700;">🔊 "Car approaching. Stop."</div>
+            <div style="color: var(--accent-green); font-style: italic; margin-top: 8px;">
+              🤫 [Complete Silence — Path Clear]
+            </div>
+          </div>
+          <p style="font-size: 13px; color: var(--text-white-secondary);">
+            Speaks once when a threat approaches, suppresses repetitive noise, and preserves natural hearing.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Core Product Features (8 Cards) -->
+    <section id="features" class="saas-section" style="background: #fff; max-width: 100%; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+        <div class="section-label">Core Capabilities</div>
+        <h2 class="section-title">
+          Engineered for visual independence.
+        </h2>
+        <p class="section-desc">
+          Eight integrated intelligence layers working harmoniously in real-time.
+        </p>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h4>Risk-Aware Vision</h4>
+            <p>Evaluates which objects actually matter to user safety instead of raw classification.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h4>Real-Time Tracking</h4>
+            <p>Maintains persistent object IDs across frames to measure approach velocities.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h4>Predictive Awareness</h4>
+            <p>Estimates time-to-danger before a moving obstacle enters the user's path.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h4>Smart Prioritization</h4>
+            <p>Filters 20 simultaneous background detections down to the 1 actionable warning.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🗣️</div>
+            <h4>Context-Aware Voice</h4>
+            <p>Adaptive cues: "Path clear", "Chair on left", or "Vehicle approaching. Stop."</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🤫</div>
+            <h4>Silence by Design</h4>
+            <p>90% intentional silence prevents cognitive overload and respects the user's focus.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">💬</div>
+            <h4>Ask MARK</h4>
+            <p>Natural voice Q&A: "What's ahead?", "Am I safe?", "Read sign", "Check note".</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🚨</div>
+            <h4>Emergency Assistance</h4>
+            <p>Voice-triggered SOS mode with instant priority caregiver alert logging.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Product Modes -->
+    <section id="modes" class="saas-section">
+      <div class="section-label">Interaction Modes</div>
+      <h2 class="section-title">
+        One assistant. Multiple ways to navigate the world.
+      </h2>
+      <p class="section-desc">
+        Specialized on-demand AI modes designed to conserve compute and give immediate answers.
+      </p>
+
+      <div class="modes-grid">
+        <div class="mode-card">
+          <div class="mode-icon-circle">🚶</div>
+          <div class="mode-name">Awareness Mode</div>
+          <div class="mode-desc">Continuous real-time hazard tracking and corridor safety.</div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-icon-circle">📄</div>
+          <div class="mode-name">Read Mode (OCR)</div>
+          <div class="mode-desc">Instant vocalization of signs, labels, documents, and room tags.</div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-icon-circle">💵</div>
+          <div class="mode-name">Currency Mode</div>
+          <div class="mode-desc">Instant banknote denomination identification (₹500, ₹200, ₹100, etc.).</div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-icon-circle">🎙️</div>
+          <div class="mode-name">Conversation Mode</div>
+          <div class="mode-desc">Hands-free Q&A about surrounding spatial details.</div>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-icon-circle">🚨</div>
+          <div class="mode-name">Emergency Mode</div>
+          <div class="mode-desc">Instant siren trigger and urgent broadcast state.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. SaaS & Institutional Scale -->
+    <section class="saas-section" style="background: #fff; max-width: 100%; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);">
+      <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+        <div class="section-label">Enterprise & Institutional SaaS</div>
+        <h2 class="section-title">
+          Accessibility engineered to scale.
+        </h2>
+        <p class="section-desc">
+          Beyond individual independence, MARK provides telemetric awareness for caregivers, institutions, and accessibility organizations.
+        </p>
+
+        <div class="tiers-grid">
+          <div class="tier-card">
+            <div>
+              <div class="tier-title">Personal</div>
+              <div class="tier-target">For visually impaired individuals</div>
+              <ul class="tier-features-list">
+                <li>Local real-time hazard detection</li>
+                <li>On-demand OCR & Currency recognition</li>
+                <li>Voice interaction & Emergency SOS</li>
+                <li>Personal walking session history</li>
+              </ul>
+            </div>
+            <a href="/app" target="_blank" class="btn-secondary-hero" style="text-decoration: none; text-align: center;">
+              Launch App
+            </a>
+          </div>
+
+          <div class="tier-card featured">
+            <span class="tier-badge">RECOMMENDED</span>
+            <div>
+              <div class="tier-title">Caregiver & Family</div>
+              <div class="tier-target">For families & direct guardians</div>
+              <ul class="tier-features-list">
+                <li>Everything in Personal</li>
+                <li>Live telemetric session monitoring</li>
+                <li>Instant SMS/Push SOS notifications</li>
+                <li>Hazard heatmap & safety logs</li>
+              </ul>
+            </div>
+            <a href="/app" target="_blank" class="btn-primary-hero" style="text-decoration: none; text-align: center; justify-content: center;">
+              Launch Co-Pilot
+            </a>
+          </div>
+
+          <div class="tier-card">
+            <div>
+              <div class="tier-title">Institutional</div>
+              <div class="tier-target">For schools, hospitals & government programs</div>
+              <ul class="tier-features-list">
+                <li>Multi-device fleet management</li>
+                <li>Centralized accessibility dashboard</li>
+                <li>Custom indoor corridor mapping</li>
+                <li>Enterprise safety SLA & compliance</li>
+              </ul>
+            </div>
+            <a href="/app" target="_blank" class="btn-secondary-hero" style="text-decoration: none; text-align: center;">
+              Contact Team
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Product Roadmap -->
+    <section id="roadmap" class="saas-section">
+      <div class="section-label">Product Roadmap</div>
+      <h2 class="section-title">
+        The path toward visual independence.
+      </h2>
+      <p class="section-desc">
+        A clear, disciplined development trajectory from prototype to global assistive ecosystem.
+      </p>
+
+      <div class="problem-grid">
+        <div class="problem-card">
+          <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 800; color: var(--accent-green);">PHASE 1 • CURRENT (HACKSPRINT 2.0)</div>
+          <h3>MARK 2.0 Prototype</h3>
+          <p>
+            Real-time local YOLOv8 perception, persistent IoU tracking, multi-factor risk engine, Gemini OCR/Currency modes, Supabase session telemetry, and Apple-grade SaaS console.
+          </p>
+        </div>
+        <div class="problem-card">
+          <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 800; color: var(--accent-blue);">PHASE 2 • ROADMAP</div>
+          <h3>Multilingual & Wearable Edge AI</h3>
+          <p>
+            Regional Indian language synthesis (Telugu, Hindi, Tamil), environmental acoustic hazard classifier (horns, sirens), lightweight smart glasses hardware, and direct caregiver push alerts.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Final Call to Action -->
+    <section class="saas-section" style="padding-top: 0;">
+      <div class="final-cta-box">
+        <h2 class="final-cta-headline">
+          Independence shouldn't require perfect vision.
+        </h2>
+        <p class="final-cta-sub">
+          MARK turns visual information into the guidance you can hear — helping people navigate their world with clarity and confidence.
+        </p>
+        <a href="/app" target="_blank" class="btn-primary-hero" style="background: #fff; color: #000; padding: 18px 42px; font-size: 17px; text-decoration: none;">
+          Experience MARK 2.0 Live (New Tab) →
+        </a>
+      </div>
+    </section>
+
+    <!-- 10. Footer -->
+    <footer class="saas-footer">
+      <div class="footer-top">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px;">
+            <div class="nav-brand-logo">M</div>
+            <span>MARK 2.0</span>
+          </div>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px; max-width: 320px;">
+            AI Visual Assistant for the Visually Impaired. Powered by on-device computer vision and spatial risk intelligence.
+          </p>
+        </div>
+        <div style="display: flex; gap: 40px; font-size: 13px;">
+          <div>
+            <div style="font-weight: 700; margin-bottom: 10px;">Platform</div>
+            <div style="display: flex; flex-direction: column; gap: 6px; color: var(--text-secondary);">
+              <a href="#how-it-works" style="color: inherit; text-decoration: none;">How It Works</a>
+              <a href="#features" style="color: inherit; text-decoration: none;">Features</a>
+              <a href="#modes" style="color: inherit; text-decoration: none;">Modes</a>
+            </div>
+          </div>
+          <div>
+            <div style="font-weight: 700; margin-bottom: 10px;">Company</div>
+            <div style="display: flex; flex-direction: column; gap: 6px; color: var(--text-secondary);">
+              <a href="#silence" style="color: inherit; text-decoration: none;">Silence Innovation</a>
+              <a href="#roadmap" style="color: inherit; text-decoration: none;">Roadmap</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 MARK 2.0 • All rights reserved.</span>
+        <span>HackSprint 2.0 — AITAM • Assistive AI for Visual Independence</span>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

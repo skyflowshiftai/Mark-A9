@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>MARK 2.0 — Guardian & Caretaker Live Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    :root {
+      --bg-dark: #09090b;
+      --card-bg: #141417;
+      --border-color: #27272a;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-yellow: #f59e0b;
+      --accent-blue: #38bdf8;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: #f4f4f5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .monitor-nav {
+      min-height: 64px;
+      background: #121215;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .monitor-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: clamp(14px, 2vw, 24px);
+      padding: clamp(14px, 2vw, 24px);
+      max-width: 1560px;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+      flex: 1;
+    }
+
+    .monitor-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: clamp(12px, 2vw, 18px);
+      padding: clamp(14px, 2vw, 22px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    .monitor-video-container {
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-color);
+      width: 100%;
+    }
+
+    #monitor-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .badge-active {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--accent-green);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-off {
+      background: rgba(161, 161, 170, 0.15);
+      border: 1px solid rgba(161, 161, 170, 0.4);
+      color: #a1a1aa;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .event-timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      max-height: 400px;
+      padding-right: 4px;
+    }
+
+    .event-item {
+      background: #18181c;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent-green);
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .event-item.URGENT {
+      border-left-color: var(--accent-red);
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .event-item.CAUTION {
+      border-left-color: var(--accent-yellow);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .event-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #71717a;
+    }
+
+    .emergency-banner {
+      display: none;
+      background: var(--accent-red);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 12px;
+      margin: 0 clamp(14px, 2vw, 24px) 16px;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 800;
+      animation: pulse 1.5s infinite;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .monitor-grid {
+        grid-template-columns: 1fr;
+        padding: 14px;
+      }
+      .monitor-nav {
+        padding: 12px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="monitor-nav">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div style="background: var(--accent-blue); color: #000; font-weight: 900; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;">M</div>
+      <div>
+        <div style="font-weight: 800; font-size: clamp(14px, 2.5vw, 16px); letter-spacing: -0.01em;">MARK 2.0 GUARDIAN MONITOR</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #a1a1aa;">REMOTE ASSISTIVE COPILOT</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <span id="mon-ai-mode-badge" class="badge-active">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green);"></span>
+        AI MODE: ACTIVE
+      </span>
+      <span id="mon-risk-badge" class="badge-active" style="border-color: rgba(56, 189, 248, 0.4); color: var(--accent-blue); background: rgba(56, 189, 248, 0.15);">
+        RISK: SAFE
+      </span>
+      <a href="/user" style="color: #a1a1aa; font-size: 12px; text-decoration: none; font-weight: 600; border: 1px solid #3f3f46; padding: 6px 12px; border-radius: 8px; display: inline-flex; align-items: center;">
+        Open User App ↗
+      </a>
+    </div>
+  </header>
+
+  <!-- Emergency Banner (Hidden by default) -->
+  <div id="mon-emergency-banner" class="emergency-banner" style="margin-top: 14px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 24px;">🚨</span>
+      <div>
+        <div style="font-size: 15px;">EMERGENCY SOS ALERT — USER NEEDS ASSISTANCE</div>
+        <div style="font-size: 11px; font-weight: 500; opacity: 0.9;">User broadcasted emergency alert from device.</div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button id="btn-resolve-emergency" style="background: #fff; color: #000; border: none; font-weight: 800; padding: 8px 16px; border-radius: 8px; cursor: pointer;">
+        Resolve Incident
+      </button>
+    </div>
+  </div>
+
+  <!-- Responsive Main Grid -->
+  <main class="monitor-grid">
+    
+    <!-- Left Column: Live Visual Stream + Current State -->
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      
+      <div class="monitor-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #a1a1aa;">
+            LIVE SENSOR STREAM (USER CAMERA)
+          </span>
+          <span id="mon-stream-fps" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent-green);">
+            ● 10 FPS • LIVE
+          </span>
+        </div>
+
+        <div class="monitor-video-container">
+          <canvas id="monitor-canvas"></canvas>
+          <div id="mon-waiting-feed" style="position: absolute; color: #71717a; font-size: 13px; font-family: 'JetBrains Mono', monospace; text-align: center; padding: 10px;">
+            Waiting for User Camera Stream...
+          </div>
+        </div>
+
+        <div style="background: #18181c; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #71717a; margin-bottom: 4px; text-transform: uppercase;">
+            Latest Spoken Voice Guidance:
+          </div>
+          <div id="mon-last-speech" style="font-size: clamp(16px, 3vw, 20px); font-weight: 800; color: #fff;">
+            "దారి ఖాళీగా ఉంది. నడవవచ్చు."
+          </div>
+        </div>
+      </div>
+
+      <!-- Verified Experience Memory Card -->
+      <div class="monitor-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #a1a1aa;">
+            🧠 ADAPTIVE EXPERIENCE & VERIFIED MEMORY
+          </span>
+          <a href="/api/experience/cases" target="_blank" style="color: var(--accent-blue); font-size: 11px; font-family: 'JetBrains Mono', monospace; text-decoration: none;">
+            API JSON ↗
+          </a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;" id="mon-memory-list">
+          <div style="background: #18181c; border-left: 3px solid var(--accent-blue); padding: 10px; border-radius: 6px; font-size: 12px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #71717a;">CASE_001 • VERIFIED</div>
+            <div style="font-weight: 700; color: #fff;">Approaching Vehicle Priority</div>
+            <div style="color: #a1a1aa; font-size: 11px;">Approaching vehicles crossing user path receive higher priority than stationary objects.</div>
+          </div>
+          <div style="background: #18181c; border-left: 3px solid var(--accent-blue); padding: 10px; border-radius: 6px; font-size: 12px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #71717a;">CASE_002 • VERIFIED</div>
+            <div style="font-weight: 700; color: #fff;">Dual Corridor Blockage Emergency</div>
+            <div style="color: #a1a1aa; font-size: 11px;">When both lateral corridors are occupied, emit emergency stop directive.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Live AI Event Timeline -->
+    <div class="monitor-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #a1a1aa;">
+          REAL-TIME AI EVENT TIMELINE
+        </span>
+        <span id="mon-event-count" style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #71717a;">
+          0 events
+        </span>
+      </div>
+
+      <div class="event-timeline-list" id="mon-event-list">
+        <div class="event-item">
+          <div class="event-time">Just now</div>
+          <div style="font-weight: 700; color: #fff;">Guardian Monitor Initialized</div>
+          <div style="color: #a1a1aa;">Connected to MARK 2.0 Perception WebSocket.</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/static/monitor.js"></script>
+</body>
+</html>

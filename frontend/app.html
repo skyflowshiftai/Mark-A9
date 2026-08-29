@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MARK 2.0 — AI Vision Companion</title>
+  <link rel="stylesheet" href="/styles.css?v=3.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .app-workspace-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Top Navigation Bar */
+    .app-top-nav {
+      background: #141417;
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #fff;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+    }
+
+    .app-nav-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .app-nav-tab {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #a1a1aa;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .app-nav-tab.active {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: #3f3f46;
+      color: #fff;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ctrl-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #3f3f46;
+      background: #18181c;
+      color: #e4e4e7;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ctrl-btn:hover {
+      background: #27272a;
+      border-color: #52525b;
+    }
+
+    /* Main Stable Grid */
+    .app-main-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    /* Camera Feed Card - FIXED STABLE DIMENSIONS */
+    .app-camera-card {
+      background: #000;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      width: 100%;
+      max-height: 440px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #active-video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    #active-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      object-fit: contain;
+    }
+
+    .camera-hud-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      z-index: 5;
+    }
+
+    .hud-pill {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: #fff;
+    }
+
+    .camera-offline-overlay {
+      position: absolute;
+      inset: 0;
+      background: #09090b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #71717a;
+      z-index: 4;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Right Column Stack */
+    .app-sidebar-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* The ONE and ONLY Push-To-Talk Card */
+    .app-voice-companion-card {
+      background: #18181c;
+      border: 2px solid #27272a;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .app-voice-companion-card.LISTENING {
+      border-color: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
+    }
+
+    .app-voice-companion-card.PROCESSING {
+      border-color: #38bdf8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+    }
+
+    .app-voice-companion-card.SPEAKING {
+      border-color: #10b981;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+    }
+
+    .card-heading-mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #a1a1aa;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Dedicated Single Microphone Button */
+    .btn-talk-mark {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border: none;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 14px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.15s, background 0.2s;
+      width: 100%;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-talk-mark:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-talk-mark:active {
+      transform: translateY(1px);
+    }
+
+    .btn-talk-mark.LISTENING {
+      background: #ef4444 !important;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.6) !important;
+    }
+
+    .btn-talk-mark.PROCESSING {
+      background: #0284c7 !important;
+    }
+
+    .btn-talk-mark.SPEAKING {
+      background: #059669 !important;
+    }
+
+    /* Real-Time Transcript Box */
+    .conversation-transcript-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid #27272a;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 70px;
+    }
+
+    .transcript-line {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .transcript-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 800;
+      color: #71717a;
+      text-transform: uppercase;
+    }
+
+    .transcript-text {
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    /* Quick Action Chips */
+    .quick-actions-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .action-chip {
+      background: #27272a;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .action-chip:hover {
+      background: #3f3f46;
+      color: #fff;
+    }
+
+    .action-chip.sos {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #f87171;
+    }
+
+    /* Live Tracking Card */
+    .app-glass-card {
+      background: #141417;
+      border: 1px solid #27272a;
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #tracking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 110px;
+      min-height: 40px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    /* Intelligence Card */
+    .app-intelligence-card {
+      background: #18181c;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .app-intelligence-card.RED {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: #ef4444;
+    }
+
+    .app-intelligence-card.YELLOW {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: #f59e0b;
+    }
+
+    .app-intelligence-card.GREEN {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: #10b981;
+    }
+
+    @media (max-width: 960px) {
+      .app-main-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-workspace-container">
+    
+    <!-- 1. Top Navigation Bar -->
+    <header class="app-top-nav">
+      <div class="nav-brand-group">
+        <div class="nav-brand-logo">M</div>
+        <div>
+          <div style="font-weight: 800; font-size: 15px; letter-spacing: -0.02em; color: #fff;">MARK 2.0</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #a1a1aa;">AI VISION COMPANION</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="app-nav-tabs">
+        <button class="app-nav-tab active" id="tab-live">Live Co-Pilot</button>
+        <button class="app-nav-tab" id="tab-guardian">🛡️ Guardian Monitor</button>
+        <button class="app-nav-tab" id="tab-history">Session History</button>
+      </div>
+
+      <!-- Controls: AI Mode Toggle, Language, Camera Toggle -->
+      <div class="top-controls">
+        <button id="btn-toggle-ai-mode" class="ctrl-btn" style="border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.15);">
+          ● AI: ACTIVE
+        </button>
+        <button id="btn-toggle-lang" class="ctrl-btn" style="border-color: #38bdf8; color: #38bdf8; background: rgba(56, 189, 248, 0.15);">
+          🌐 తెలుగు (Telugu)
+        </button>
+        <button id="btn-toggle-camera" class="ctrl-btn" style="border-color: #10b981; color: #10b981;">
+          ▶ Start Camera
+        </button>
+      </div>
+    </header>
+
+    <!-- Active Emergency SOS Banner (Visible when emergency is active) -->
+    <div id="emergency-active-banner" style="display: none; background: linear-gradient(135deg, #7f1d1d, #991b1b); border: 2px solid #ef4444; border-radius: 12px; padding: 12px 18px; align-items: center; justify-content: space-between; gap: 12px; color: #fff; box-shadow: 0 0 30px rgba(239, 68, 68, 0.4);">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span style="font-size: 24px;">🚨</span>
+        <div>
+          <div style="font-weight: 800; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase;">
+            EMERGENCY ACTIVE • OUTBOUND CALL INITIATED
+          </div>
+          <div style="font-size: 12px; color: #fecaca;" id="emergency-call-status-text">
+            Calling family contact (+1 949 738 5095) • Caretaker Stream Synced
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <a id="btn-emergency-dial" href="tel:+19497385095" class="ctrl-btn" style="background: #ef4444; border: 1px solid #fff; color: #fff; text-decoration: none; font-weight: bold; padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+          📞 Dial Call (+1 949 738 5095)
+        </a>
+        <button id="btn-resolve-emergency" class="ctrl-btn" style="background: rgba(0,0,0,0.5); border-color: #fca5a5; color: #fff; padding: 6px 14px; cursor: pointer;">
+          ✓ Resolve
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. Main Live Grid (Camera + Conversational Companion & Tracking) -->
+    <div class="app-main-grid" id="view-live">
+      
+      <!-- Live Camera Feed Card -->
+      <div class="app-camera-card">
+        <video id="active-video" playsinline muted autoplay></video>
+        <canvas id="active-canvas" width="640" height="360"></canvas>
+
+        <div class="camera-hud-overlay">
+          <div class="hud-pill" id="hud-cam-status" style="color: #71717a;">
+            ○ SENSOR STANDBY
+          </div>
+          <div class="hud-pill" id="hud-latency">
+            FPS: -- • ~0ms
+          </div>
+        </div>
+
+        <div id="camera-offline-msg" class="camera-offline-overlay">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          <div style="font-weight: 700; font-size: 14px; color: #fff;">Camera is Standby</div>
+          <div style="font-size: 11px; color: #a1a1aa;">Click "Start Camera" above to enable live sensor</div>
+        </div>
+      </div>
+
+      <!-- Right Column: Conversational Voice Stack & Live Tracking -->
+      <div class="app-sidebar-stack">
+        
+        <!-- Primary Single Push-To-Talk Voice Companion -->
+        <div class="app-voice-companion-card" id="voice-companion-card">
+          <div class="card-heading-mono">
+            <span>AI VOICE COMPANION</span>
+            <span id="voice-mic-badge" style="color: #38bdf8;">PUSH TO TALK</span>
+          </div>
+
+          <!-- THE ONE MICROPHONE BUTTON -->
+          <button id="btn-talk-mark" class="btn-talk-mark">
+            <span id="mic-icon" style="font-size: 18px;">🎙️</span>
+            <span id="mic-label">TALK TO MARK</span>
+          </button>
+
+          <!-- Conversation Transcript Box -->
+          <div class="conversation-transcript-box">
+            <div class="transcript-line">
+              <span class="transcript-tag">YOU</span>
+              <span class="transcript-text" id="transcript-you" style="color: #38bdf8;">"..."</span>
+            </div>
+            <div class="transcript-line" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 4px;">
+              <span class="transcript-tag">MARK</span>
+              <span class="transcript-text" id="transcript-mark" style="color: #10b981;">"నమస్కారం సర్, నేను MARK. మీ కోసం సిద్ధంగా ఉన్నాను."</span>
+            </div>
+          </div>
+
+          <!-- Conversational Quick Action Chips -->
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #71717a; text-transform: uppercase; margin-bottom: 4px;">
+              Quick Voice Actions:
+            </div>
+            <div class="quick-actions-flow">
+              <button class="action-chip" onclick="triggerVoiceQuery('ఇంకా ఉన్నారా?')">👉 ఇంకా ఉన్నారా?</button>
+              <button class="action-chip" onclick="triggerVoiceQuery('అతను వెళ్లిపోయాడా?')">👉 అతను వెళ్లిపోయాడా?</button>
+              <button class="action-chip" onclick="triggerVoiceQuery('నేను వెళ్లవచ్చా?')">👉 నేను వెళ్లవచ్చా?</button>
+              <button class="action-chip" onclick="triggerVoiceQuery('నా ముందు ఏముంది?')">👉 నా ముందు ఏముంది?</button>
+              <button class="action-chip" onclick="triggerVoiceQuery('ఈ నోటు ఎంత?')">💵 ఈ నోటు ఎంత?</button>
+              <button class="action-chip" onclick="triggerVoiceQuery('సిగ్నల్ ఏ కలర్ ఉంది?')">🚦 సిగ్నల్ ఏంటి?</button>
+              <button class="action-chip" onclick="triggerVoiceQuery('రోడ్ సైన్ ఏముంది?')">🛑 రోడ్ సైన్?</button>
+              <button class="action-chip" onclick="triggerVoiceQuery('ఇది చదువు')">📖 ఇది చదువు</button>
+              <button class="action-chip sos" onclick="triggerVoiceQuery('మార్క్ help')">🚨 SOS / Help</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Environment & Active Tracking -->
+        <div class="app-glass-card">
+          <div class="card-heading-mono">
+            <span>LIVE TRACKED ENTITIES</span>
+            <span id="env-total-tag" style="color: #10b981;">0 OBJECTS</span>
+          </div>
+          <div id="tracking-list">
+            <div style="color: #71717a; text-align: center; padding: 6px;">Camera initializing...</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 3. Authoritative World State & Intelligence Status Card -->
+    <div class="app-intelligence-card UNKNOWN" id="intelligence-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.08em;">
+              ASSESSED RISK
+            </div>
+            <div id="intel-risk-level" style="font-size: 14px; font-weight: 800; color: #71717a;">
+              STANDBY
+            </div>
+          </div>
+
+          <div style="border-left: 1px solid #3f3f46; padding-left: 16px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.08em;">
+              PATH CLEARANCE
+            </div>
+            <div id="intel-path-status" style="font-size: 14px; font-weight: 800; color: #71717a;">
+              WAITING SENSOR...
+            </div>
+          </div>
+        </div>
+
+        <div class="hud-pill" id="intel-decision-pill" style="border-color: rgba(255, 255, 255, 0.15); color: #a1a1aa; font-size: 10px;">
+          STATUS: ⏳ STANDBY
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 6px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px;">
+          LAST SPOKEN GUIDANCE:
+        </div>
+        <div id="intel-last-instruction" style="font-size: 14px; font-weight: 700; color: #fff;">
+          "నమస్కారం సర్, నేను MARK. మీ కోసం సిద్ధంగా ఉన్నాను."
+        </div>
+      </div>
+    </div>
+
+    <!-- Guardian Monitor View (Tab 2) -->
+    <div id="view-guardian" style="display: none; flex-direction: column; gap: 12px;">
+      <div class="app-main-grid">
+        <div class="app-camera-card">
+          <canvas id="guardian-canvas" width="640" height="360" style="width: 100%; height: 100%; object-fit: contain;"></canvas>
+          <div class="camera-hud-overlay">
+            <div class="hud-chip" style="color: #10b981; background: rgba(0,0,0,0.7); padding: 4px 8px; border-radius: 4px;">● GUARDIAN LIVE FEED</div>
+          </div>
+        </div>
+
+        <div class="app-sidebar-stack">
+          <div class="app-glass-card" style="flex: 1;">
+            <div class="card-heading-mono">
+              <span>REMOTE CARETAKER STREAM</span>
+              <span style="color: #38bdf8;">SYNCED</span>
+            </div>
+            <p style="color: #a1a1aa; font-size: 12px; line-height: 1.4;">
+              Guardian monitors the exact authoritative world state and live video computed from the user's perception stack.
+            </p>
+            <div style="margin-top: 8px;">
+              <a href="/guardian" target="_blank" class="ctrl-btn" style="text-decoration: none; border-color: #38bdf8; color: #38bdf8;">
+                ↗ Open Full Guardian Dashboard in New Tab
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session History View (Tab 3) -->
+    <div id="view-history" style="display: none; flex-direction: column; gap: 12px;">
+      <div class="app-glass-card">
+        <div class="card-heading-mono">
+          <span>PAST RECORDED SESSIONS</span>
+          <span style="color: #10b981;">SUPABASE CLOUD SYNCED</span>
+        </div>
+        <div id="history-container" style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+          <div style="color: #71717a; padding: 12px; text-align: center;">Loading session history...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/app_workspace.js?v=3.0"></script>
+</body>
+</html>

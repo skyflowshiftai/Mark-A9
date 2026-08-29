@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>MARK 2.0 — Guardian Live Observation Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: #141417;
+      --card-border: #27272a;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-yellow: #f59e0b;
+      --accent-blue: #38bdf8;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: #f4f4f5;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .guardian-shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      width: 100%;
+      padding: clamp(12px, 2.5vw, 24px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1;
+    }
+
+    .guardian-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 12px 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-g {
+      background: #38bdf8;
+      color: #000;
+      font-weight: 900;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .guardian-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 20px;
+      flex: 1;
+    }
+
+    @media (max-width: 960px) {
+      .guardian-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .feed-card {
+      background: #000;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      aspect-ratio: 16/9;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    }
+
+    #guardian-canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #09090b;
+    }
+
+    .feed-hud {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .hud-chip {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    .sidebar-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .g-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .g-card-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      color: #a1a1aa;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-pill-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-pill {
+      background: #18181c;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-pill-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: #71717a;
+    }
+
+    .stat-pill-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .timeline-container {
+      max-height: 240px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    .timeline-item {
+      background: #18181c;
+      border-left: 3px solid var(--accent-green);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .timeline-item.CAUTION { border-left-color: var(--accent-yellow); }
+    .timeline-item.URGENT, .timeline-item.CRITICAL { border-left-color: var(--accent-red); }
+
+    .timeline-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: #71717a;
+    }
+
+    .emergency-banner {
+      display: none;
+      background: rgba(239, 68, 68, 0.15);
+      border: 2px solid var(--accent-red);
+      border-radius: 16px;
+      padding: 16px 20px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+    }
+
+    .btn-call-fam {
+      background: var(--accent-red);
+      color: #fff;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 18px;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="guardian-shell">
+    
+    <!-- Navigation Bar -->
+    <header class="guardian-nav">
+      <div class="brand">
+        <div class="badge-g">🛡️</div>
+        <div>
+          <div style="font-weight: 800; font-size: 16px; letter-spacing: -0.02em; color: #fff;">MARK GUARDIAN</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #38bdf8;">REMOTE LIVE OBSERVATION • SESSION: <span id="session-tag">DEMO-01</span></div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="hud-chip" id="connection-badge" style="color: var(--accent-green); border-color: rgba(16,185,129,0.3);">
+          ● CONNECTED TO USER
+        </div>
+      </div>
+    </header>
+
+    <!-- Emergency SOS Alert Banner -->
+    <div id="guardian-sos-banner" class="emergency-banner">
+      <div>
+        <div style="font-weight: 900; font-size: 16px; color: #f87171;">🚨 EMERGENCY SOS ACTIVE</div>
+        <div style="font-size: 12px; color: #fca5a5;">User triggered emergency assistance. Remote intervention requested.</div>
+      </div>
+      <a href="tel:+19497385095" class="btn-call-fam">
+        📞 CALL USER (+1 949 738 5095)
+      </a>
+    </div>
+
+    <!-- Main Live Grid -->
+    <div class="guardian-grid">
+      
+      <!-- Video Feed Observer -->
+      <div class="feed-card">
+        <canvas id="guardian-canvas" width="640" height="360"></canvas>
+        <div id="feed-waiting-overlay" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #09090b; gap: 12px; z-index: 5; padding: 20px; text-align: center;">
+          <span style="font-size: 36px; animation: pulse 1.5s infinite;">📡</span>
+          <div style="font-weight: 800; font-size: 15px; color: #fff;">Waiting for User Camera Feed...</div>
+          <div style="font-size: 11px; color: #a1a1aa; max-width: 280px; line-height: 1.4;">Open MARK on the user's phone or tap below to start the camera:</div>
+          <a href="/mark" target="_blank" style="margin-top: 6px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 800; font-size: 12px; padding: 10px 18px; border-radius: 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">
+            ▶ Start Camera on User Device (/mark)
+          </a>
+        </div>
+        <div class="feed-hud" style="z-index: 10;">
+          <div class="hud-chip" id="cam-status-chip">● USER CAMERA STREAM</div>
+          <div class="hud-chip" id="hud-telemetry">FPS: 10.0 • LATENCY: ~12ms</div>
+        </div>
+      </div>
+
+      <!-- State & Intelligence Sidebar -->
+      <div class="sidebar-stack">
+        
+        <!-- MARK World State -->
+        <div class="g-card">
+          <div class="g-card-title">
+            <span>MARK WORLD STATE</span>
+            <span id="ai-mode-tag" style="color: var(--accent-green);">AI: ON</span>
+          </div>
+
+          <div class="status-pill-grid">
+            <div class="stat-pill">
+              <span class="stat-pill-label">CURRENT SITUATION</span>
+              <span class="stat-pill-value" id="stat-situation" style="color: #38bdf8;">CLEAR</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">THREAT LEVEL</span>
+              <span class="stat-pill-value" id="stat-threat" style="color: var(--accent-green);">SILENT</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">WALKING PATH</span>
+              <span class="stat-pill-value" id="stat-path" style="color: var(--accent-green);">CLEAR</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-pill-label">TRACKED OBJECTS</span>
+              <span class="stat-pill-value" id="stat-obj-count">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Latest Spoken Guidance -->
+        <div class="g-card">
+          <div class="g-card-title">
+            <span>LATEST MARK VOICE INSTRUCTION</span>
+            <span style="font-size: 10px; color: #a1a1aa;">TELUGU</span>
+          </div>
+          <div class="voice-instruction-box" id="latest-voice-msg">
+            "సర్, మీ ముందు దారి క్లియర్గా ఉంది."
+          </div>
+        </div>
+
+        <!-- AI Event Timeline -->
+        <div class="g-card">
+          <div class="g-card-title">
+            <span>AI EVENT TIMELINE</span>
+            <span id="event-counter" style="color: #38bdf8;">0 EVENTS</span>
+          </div>
+          <div class="timeline-container" id="timeline-list">
+            <div class="timeline-item">
+              <div class="timeline-time">System Online</div>
+              <div style="font-weight: 700; color: #fff;">Guardian observation channel open.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/guardian.js?v=2.6"></script>
+</body>
+</html>
