@@ -336,6 +336,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // SOS Emergency Trigger Button Handler
+  const btnTriggerSos = document.getElementById('btn-trigger-sos');
+  if (btnTriggerSos) {
+    btnTriggerSos.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/emergency/trigger', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ source: 'BUTTON' })
+        });
+        const data = await res.json();
+        if (emergencyActiveBanner) emergencyActiveBanner.style.display = 'flex';
+        const msg = currentLanguage.startsWith("te") ? "సర్, ఎమర్జెన్సీ కాల్ చేస్తున్నాను." : "Sir, initiating emergency call immediately.";
+        if (transcriptMark) transcriptMark.textContent = `"${msg}"`;
+        playAudioAlert(msg, "CRITICAL", true);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
+
   // Resolve Emergency Button Handler
   if (btnResolveEmergency) {
     btnResolveEmergency.addEventListener('click', async () => {

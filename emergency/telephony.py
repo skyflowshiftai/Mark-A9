@@ -75,7 +75,7 @@ class TelephonyService:
         # 1. Primary: Twilio Emergency Caller
         try:
             from emergency_caller import make_emergency_call
-            sid = make_emergency_call()
+            sid = make_emergency_call(to_number=norm_number)
             if sid:
                 self.active_call_id = sid
                 self.active_call_status = "CALL_CONNECTING"
