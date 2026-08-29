@@ -34,6 +34,7 @@ from perception.traffic_and_signs import TrafficAndSignRecognizer
 from emergency.emergency import EmergencyManager
 from supabase_logger import SupabaseLogger
 from intelligence.attention_manager import AttentionManager
+from emergency_caller import make_emergency_call
 
 app = FastAPI(
     title="MARK 2.0 AI Perception & Tracking Engine",
@@ -220,6 +221,16 @@ async def handle_emergency(payload: Dict[str, Any] = Body(default={})):
         res = emergency_manager.trigger(source=payload.get("source", "BUTTON"))
         system_state["last_mark_message"] = "Emergency alert activated."
         logger.log_alert("Emergency alert activated.", "URGENT")
+        try:
+            import threading
+            call_thread = threading.Thread(
+                target=make_emergency_call,
+                daemon=True
+            )
+            call_thread.start()
+            print("[MARK 2.0] EMERGENCY CALL INITIATED TO +916303318876")
+        except Exception as e:
+            print(f"[MARK 2.0] Emergency call failed: {e}")
     return res
 
 @app.post("/api/emergency/resolve")
