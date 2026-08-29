@@ -348,8 +348,18 @@ async def handle_conversation(payload: Dict[str, Any] = Body(...)):
     
     res = orchestrator.process_query(command_text, world_state, language=lang)
     
-    if res.get("intent") == "HELP":
+    if res.get("intent") in ("EMERGENCY", "HELP", "FAMILY_CALL_REQUEST") or res.get("action") in ("EMERGENCY_CALL", "CALL_FAMILY"):
         emergency_manager.trigger(source="VOICE")
+        try:
+            import threading
+            call_thread = threading.Thread(
+                target=make_emergency_call,
+                daemon=True
+            )
+            call_thread.start()
+            print("[MARK 2.0] VOICE COMMAND EMERGENCY CALL INITIATED TO +916303318876")
+        except Exception as e:
+            print(f"[MARK 2.0] Voice emergency call failed: {e}")
     
     system_state["last_mark_message"] = res["speech"]
     logger.log_alert(res["speech"], res.get("priority", "NORMAL").upper())
@@ -554,6 +564,16 @@ async def websocket_stream(websocket: WebSocket):
                 res = command_parser.parse(cmd, system_state["last_tracks"])
                 if res["action"] == "TRIGGER_EMERGENCY":
                     emergency_manager.trigger(source="VOICE")
+                    try:
+                        import threading
+                        call_thread = threading.Thread(
+                            target=make_emergency_call,
+                            daemon=True
+                        )
+                        call_thread.start()
+                        print("[MARK 2.0] WS VOICE COMMAND EMERGENCY CALL INITIATED TO +916303318876")
+                    except Exception as e:
+                        print(f"[MARK 2.0] WS Voice emergency call failed: {e}")
 
                 system_state["last_mark_message"] = res["speech"]
                 await websocket.send_text(json.dumps({

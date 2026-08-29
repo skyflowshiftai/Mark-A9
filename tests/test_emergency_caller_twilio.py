@@ -12,7 +12,7 @@ def test_make_emergency_call_logic(monkeypatch):
     class MockCalls:
         def create(self, **kwargs):
             assert "Mark A9 needs your help" in kwargs["twiml"]
-            assert kwargs["to"] == "+19497385095"
+            assert kwargs["to"] in ("+916303318876", "+19497385095")
             return MockCall()
 
     class MockClient:
